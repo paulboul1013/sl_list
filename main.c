@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <string.h>
 
 #define MAX_SIZE 100000
 
@@ -207,13 +208,66 @@ void test_factorial_with_stack() {
 
     //local stack version
     // show call and resume status like real stack save local variable and results
-    printf("Factorial of 15 is %d\n",factorial_stack(15));
+    // printf("Factorial of 15 is %d\n",factorial_stack(5));
+
+
+    //using pointer to function
+    int (*p)(int)=&factorial_stack;
+    printf("Factorial of 5 is %d\n",(*p)(5));
+    // printf("Factorial of 5 address is %p\n",p);
 }
+
+static int precedence(int op){
+	if (op=='+' || op=='-') return 1;
+	if (op=='*' || op=='/') return 2;
+	return 0;
+}
+
+static int apply_operation(int left,int right,int op){
+	switch(op){
+		case '+': return left+right;
+		case '-': return left-right;
+		case '*': return left*right;
+		case '/': return left/right;
+		default: return 0;
+	}
+}
+
+void test_expression_evaluation() {
+	node *stack_operation=NULL;
+	char *expression="1*2*3+4*5";
+	for (size_t i=0;i<strlen(expression);i++){
+		char ch=expression[i];
+		if (ch>='0' && ch<='9') {
+			push(&stack,ch-'0');
+		}
+		else if (ch=='+' || ch=='-' || ch=='*' || ch=='/') {
+			while(!is_empty(&stack_operation) && precedence(peek(&stack_operation))>=precedence(ch)){
+				int op=peek(&stack_operation); pop(&stack_operation);
+				int right=peek(&stack); pop(&stack);
+				int left=peek(&stack); pop(&stack);
+				int res=apply_operation(left,right,op);
+				push(&stack,res);
+			}
+			push(&stack_operation,ch);
+		}
+	}
+	while(!is_empty(&stack_operation)){
+		int op=peek(&stack_operation); pop(&stack_operation);
+		int right=peek(&stack); pop(&stack);
+		int left=peek(&stack); pop(&stack);
+		int res=apply_operation(left,right,op);
+		push(&stack,res);
+	}
+	printf("Result: %d\n",peek(&stack));
+	display_stack(&stack);
+}
+
 
 int main(){
 
+    test_expression_evaluation();
 
-    test_factorial_with_stack();
     
     return 0;
 }
