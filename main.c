@@ -102,6 +102,19 @@ int pop(node **head){
     return 1;
 }
 
+int multi_pop(node **head,int count){
+    if (is_empty(head)){
+        printf("Stack underflow\n");
+        return -1;
+    }
+
+    for(int i=0;i<count;i++){
+        pop(head);
+    }
+
+    return 1;
+}
+
 int peek(node **head){
     if (!is_empty(head)){
         return (*head)->data;
@@ -313,6 +326,9 @@ int main(){
     int arr[]={1,2,3};
     int arr_len=sizeof(arr)/sizeof(arr[0]);
     push_range(&stack2,arr,arr_len);
+    display_stack(&stack2);
+
+    multi_pop(&stack2,14);
     display_stack(&stack2);
 
 
