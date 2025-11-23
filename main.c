@@ -78,6 +78,12 @@ void multi_push(node **head,int data,int count){
     }
 }
 
+void push_range(node **head,int *arr,int size){
+    for(int i=0;i<size;i++){
+        push(head,arr[i]);
+    }
+}
+
 void push_value_status(node **head,int data,int status){
     if (insert_node(head,data)==-1){
         printf("Stack overflow\n");
@@ -302,6 +308,11 @@ int main(){
 
     printf("stack2 length is %d\n",stack_length(&stack2));
     multi_push(&stack2,10,5);
+    display_stack(&stack2);
+
+    int arr[]={1,2,3};
+    int arr_len=sizeof(arr)/sizeof(arr[0]);
+    push_range(&stack2,arr,arr_len);
     display_stack(&stack2);
 
 
