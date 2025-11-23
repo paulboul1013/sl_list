@@ -72,6 +72,12 @@ void push(node **head,int data){
     }
 }
 
+void multi_push(node **head,int data,int count){
+    for(int i=0;i<count;i++){
+        push(head,data);
+    }
+}
+
 void push_value_status(node **head,int data,int status){
     if (insert_node(head,data)==-1){
         printf("Stack overflow\n");
@@ -266,8 +272,38 @@ void test_expression_evaluation() {
 
 int main(){
 
-    test_expression_evaluation();
 
+
+    node *stack2=NULL;
+    push(&stack2,1);
+    push(&stack2,2);
+    push(&stack2,3);
+    push(&stack2,4);
+    push(&stack2,5);
+    push(&stack2,6);
+    push(&stack2,7);
+    push(&stack2,8);
+    push(&stack2,9);
+
+    display_stack(&stack2);
+    node *stack3=stack2;
+    display_stack(&stack3);
     
+    printf("stack2 is %d\n",peek(&stack2));
+    printf("stack3 is %d\n",peek(&stack3));
+
+    if (is_empty(&stack2)){
+        printf("stack2 is empty\n");
+    }
+    else{
+        printf("stack2 is not empty\n");
+    }
+
+
+    printf("stack2 length is %d\n",stack_length(&stack2));
+    multi_push(&stack2,10,5);
+    display_stack(&stack2);
+
+
     return 0;
 }
