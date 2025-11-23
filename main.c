@@ -155,6 +155,11 @@ int stack_length(node **head){
     return len;
 }
 
+void swap_stack(node **head1,node **head2){
+    node *temp=*head1;
+    *head1=*head2;
+    *head2=temp;
+}
 
 
 #define insert_push_code(n) push(&stack,n) 
@@ -330,6 +335,16 @@ int main(){
 
     multi_pop(&stack2,14);
     display_stack(&stack2);
+
+    stack3=NULL;
+    push(&stack3,4);
+    push(&stack3,5);
+    push(&stack3,6);
+    display_stack(&stack3);
+
+    swap_stack(&stack2,&stack3);
+    display_stack(&stack2);
+    display_stack(&stack3);
 
 
     return 0;
