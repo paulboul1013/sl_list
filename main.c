@@ -194,7 +194,7 @@ bool stack_less_than(node **stack1,node **stack2){
     return false;
 }
 
-bool stack_less_than_or_equal(node **stack1,node **stack2){
+bool stack_less_than_equal(node **stack1,node **stack2){
     return stack_less_than(stack1,stack2) || stack_equal(stack1,stack2);
 }
 
@@ -212,7 +212,9 @@ bool stack_greater_than(node **stack1,node **stack2){
     return false;
 }
 
-
+bool stack_greater_than_equal(node **stack1,node **stack2){
+    return stack_greater_than(stack1,stack2) || stack_equal(stack1,stack2);
+}
 
 #define insert_push_code(n) push(&stack,n) 
 #define pop_code() pop(&stack)
@@ -406,53 +408,38 @@ int main(){
     push(&stack5,1);
     push(&stack5,2);
     push(&stack5,3);
+    push(&stack5,4);
 
 
-
-    if (stack_equal(&stack4,&stack5)){
-        printf("stack4 and stack5 are equal\n");
+    if (stack_greater_than_equal(&stack5,&stack4)){
+        printf("stack5 is greater than or equal to stack4\n");
     }
     else{
-        printf("stack4 and stack5 are not equal\n");
+        printf("stack5 is not greater than or equal to stack4\n");
     }
 
-
-    if (stack_not_equal(&stack3,&stack2)){
-        printf("stack3 and stack2 are not equal\n");
+    
+    if (stack_greater_than(&stack5,&stack4)){
+        printf("stack5 is greater than stack4\n");
     }
     else{
-        printf("stack3 and stack2 are equal\n");
+        printf("stack5 is not greater than stack4\n");
     }
 
-
-    display_stack(&stack2);
-    display_stack(&stack3);
-    if (stack_less_than(&stack2,&stack3)){
-        printf("stack2 is less than stack3\n");
+        
+    if (stack_less_than(&stack5,&stack4)){
+        printf("stack5 is less than stack4\n");
     }
     else{
-        printf("stack2 is not less than stack3\n");
+        printf("stack5 is not less than stack4\n");
     }
 
-    if (stack_less_than_or_equal(&stack4,&stack5)){
-        printf("stack4 is less than or equal to stack5\n");
+        
+    if (stack_less_than_equal(&stack5,&stack4)){
+        printf("stack5 is less than or equal to stack4\n");
     }
     else{
-        printf("stack4 is not less than or equal to stack5\n");
-    }
-
-    if (stack_greater_than(&stack2,&stack3)){
-        printf("stack2 is greater than stack3\n");
-    }
-    else{
-        printf("stack2 is not greater than stack3\n");
-    }
-
-    if (stack_less_than(&stack4,&stack5)){
-        printf("stack4 is less than stack5\n");
-    }
-    else{
-        printf("stack4 is not less than stack5\n");
+        printf("stack5 is not less than or equal to stack4\n");
     }
 
 
