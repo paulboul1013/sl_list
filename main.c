@@ -184,17 +184,32 @@ bool stack_less_than(node **stack1,node **stack2){
     node *temp1=*stack1;
     node *temp2=*stack2;
     while(temp1!=NULL && temp2!=NULL){
-        if(temp1->data>temp2->data){
-            return false;
+        if(temp1->data<temp2->data){
+            return true;
         }
         temp1=temp1->next;
         temp2=temp2->next;
     }
-    return (temp1==NULL && temp2==NULL);
+    
+    return false;
 }
 
 bool stack_less_than_or_equal(node **stack1,node **stack2){
     return stack_less_than(stack1,stack2) || stack_equal(stack1,stack2);
+}
+
+bool stack_greater_than(node **stack1,node **stack2){
+    node *temp1=*stack1;
+    node *temp2=*stack2;
+    while(temp1!=NULL && temp2!=NULL){
+        if(temp1->data>temp2->data){
+            return true;
+        }
+        temp1=temp1->next;
+        temp2=temp2->next;
+    }
+    
+    return false;
 }
 
 
@@ -424,6 +439,20 @@ int main(){
     }
     else{
         printf("stack4 is not less than or equal to stack5\n");
+    }
+
+    if (stack_greater_than(&stack2,&stack3)){
+        printf("stack2 is greater than stack3\n");
+    }
+    else{
+        printf("stack2 is not greater than stack3\n");
+    }
+
+    if (stack_less_than(&stack4,&stack5)){
+        printf("stack4 is less than stack5\n");
+    }
+    else{
+        printf("stack4 is not less than stack5\n");
     }
 
 
