@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define MAX_SIZE 100000
 
@@ -160,6 +161,38 @@ void swap_stack(node **head1,node **head2){
     *head1=*head2;
     *head2=temp;
 }
+
+bool stack_equal(node **stack1,node **stack2){
+    node *temp1=*stack1;
+    node *temp2=*stack2;
+    while(temp1!=NULL && temp2!=NULL){
+        if(temp1->data!=temp2->data){
+            return false;
+        }
+        temp1=temp1->next;
+        temp2=temp2->next;
+    }
+
+    return (temp1==NULL && temp2==NULL);
+}
+
+bool stack_not_equal(node **stack1,node **stack2){
+    return !stack_equal(stack1,stack2);
+}
+
+bool stack_less_than(node **stack1,node **stack2){
+    node *temp1=*stack1;
+    node *temp2=*stack2;
+    while(temp1!=NULL && temp2!=NULL){
+        if(temp1->data>temp2->data){
+            return false;
+        }
+        temp1=temp1->next;
+        temp2=temp2->next;
+    }
+    return true;
+}
+
 
 
 #define insert_push_code(n) push(&stack,n) 
@@ -345,6 +378,42 @@ int main(){
     swap_stack(&stack2,&stack3);
     display_stack(&stack2);
     display_stack(&stack3);
+
+    node *stack4=NULL;
+    push(&stack4,1);
+    push(&stack4,2);
+    push(&stack4,3);
+    node *stack5=NULL;
+    push(&stack5,1);
+    push(&stack5,2);
+    push(&stack5,3);
+
+
+
+    if (stack_equal(&stack4,&stack5)){
+        printf("stack4 and stack5 are equal\n");
+    }
+    else{
+        printf("stack4 and stack5 are not equal\n");
+    }
+
+
+    if (stack_not_equal(&stack3,&stack2)){
+        printf("stack3 and stack2 are not equal\n");
+    }
+    else{
+        printf("stack3 and stack2 are equal\n");
+    }
+
+
+    display_stack(&stack2);
+    display_stack(&stack3);
+    if (stack_less_than(&stack2,&stack3)){
+        printf("stack2 is less than stack3\n");
+    }
+    else{
+        printf("stack2 is not less than stack3\n");
+    }
 
 
     return 0;
