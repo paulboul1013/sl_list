@@ -31,28 +31,34 @@ void print_student(const void *data, size_t size) {
 }
 
 int main() {
-    printf("=== 測試 int 型態 ===\n");
+    printf("=== 測試 int 型態（核心 Stack 操作，不需要比較函數）===\n");
     node *int_stack = NULL;
     int int_val;
     
-    int_val = 10; push(&int_stack, &int_val, sizeof(int), compare_int, print_int);
-    int_val = 20; push(&int_stack, &int_val, sizeof(int), compare_int, print_int);
-    int_val = 30; push(&int_stack, &int_val, sizeof(int), compare_int, print_int);
+    // 簡化版本：只需要資料和大小
+    int_val = 10; push(&int_stack, &int_val, sizeof(int));
+    int_val = 20; push(&int_stack, &int_val, sizeof(int));
+    int_val = 30; push(&int_stack, &int_val, sizeof(int));
     
-    printf("int_stack: ");
-    display_stack(&int_stack);
-    
+    // peek 操作不需要比較函數
     int *peek_int = (int*)peek(&int_stack);
     printf("頂部元素: %d\n", peek_int ? *peek_int : -1);
-    printf("長度: %d\n\n", stack_length(&int_stack));
+    printf("長度: %d\n", stack_length(&int_stack));
+    
+    // 如果需要顯示，使用 push_with_print（但已經 push 的節點沒有 print 函數）
+    // 所以這裡顯示記憶體位址
+    printf("int_stack（顯示記憶體位址，因為沒有設置 print 函數）: ");
+    display_stack(&int_stack);
+    printf("\n");
 
-    printf("=== 測試 float 型態 ===\n");
+    printf("=== 測試 float 型態（使用 push_with_print 以便顯示）===\n");
     node *float_stack = NULL;
     float float_val;
     
-    float_val = 3.14f; push(&float_stack, &float_val, sizeof(float), compare_float, print_float);
-    float_val = 2.71f; push(&float_stack, &float_val, sizeof(float), compare_float, print_float);
-    float_val = 1.41f; push(&float_stack, &float_val, sizeof(float), compare_float, print_float);
+    // 如果需要顯示功能，使用 push_with_print
+    float_val = 3.14f; push_with_print(&float_stack, &float_val, sizeof(float), print_float);
+    float_val = 2.71f; push_with_print(&float_stack, &float_val, sizeof(float), print_float);
+    float_val = 1.41f; push_with_print(&float_stack, &float_val, sizeof(float), print_float);
     
     printf("float_stack: ");
     display_stack(&float_stack);
@@ -61,13 +67,13 @@ int main() {
     printf("頂部元素: %.2f\n", peek_float ? *peek_float : -1.0f);
     printf("長度: %d\n\n", stack_length(&float_stack));
 
-    printf("=== 測試 char 型態 ===\n");
+    printf("=== 測試 char 型態（使用 push_with_print 以便顯示）===\n");
     node *char_stack = NULL;
     char char_val;
     
-    char_val = 'A'; push(&char_stack, &char_val, sizeof(char), compare_char, print_char);
-    char_val = 'B'; push(&char_stack, &char_val, sizeof(char), compare_char, print_char);
-    char_val = 'C'; push(&char_stack, &char_val, sizeof(char), compare_char, print_char);
+    char_val = 'A'; push_with_print(&char_stack, &char_val, sizeof(char), print_char);
+    char_val = 'B'; push_with_print(&char_stack, &char_val, sizeof(char), print_char);
+    char_val = 'C'; push_with_print(&char_stack, &char_val, sizeof(char), print_char);
     
     printf("char_stack: ");
     display_stack(&char_stack);
@@ -76,24 +82,24 @@ int main() {
     printf("頂部元素: %c\n", peek_char ? *peek_char : '?');
     printf("長度: %d\n\n", stack_length(&char_stack));
 
-    printf("=== 測試 struct (Student) 型態 ===\n");
+    printf("=== 測試 struct (Student) 型態（使用 push_with_print 以便顯示）===\n");
     node *student_stack = NULL;
     Student student;
     
     student.id = 1;
     strcpy(student.name, "Alice");
     student.score = 95.5f;
-    push(&student_stack, &student, sizeof(Student), compare_student, print_student);
+    push_with_print(&student_stack, &student, sizeof(Student), print_student);
     
     student.id = 2;
     strcpy(student.name, "Bob");
     student.score = 87.0f;
-    push(&student_stack, &student, sizeof(Student), compare_student, print_student);
+    push_with_print(&student_stack, &student, sizeof(Student), print_student);
     
     student.id = 3;
     strcpy(student.name, "Charlie");
     student.score = 92.3f;
-    push(&student_stack, &student, sizeof(Student), compare_student, print_student);
+    push_with_print(&student_stack, &student, sizeof(Student), print_student);
     
     printf("student_stack: ");
     display_stack(&student_stack);
@@ -106,42 +112,40 @@ int main() {
     }
     printf("長度: %d\n\n", stack_length(&student_stack));
 
-    printf("=== 測試 stack 比較操作（使用 int） ===\n");
+    printf("=== 測試 stack 比較操作（使用 memcmp，因為沒有設置 compare 函數）===\n");
     node *stack1 = NULL;
     node *stack2 = NULL;
     
-    int_val = 1; push(&stack1, &int_val, sizeof(int), compare_int, print_int);
-    int_val = 2; push(&stack1, &int_val, sizeof(int), compare_int, print_int);
-    int_val = 3; push(&stack1, &int_val, sizeof(int), compare_int, print_int);
+    // 使用簡化版本的 push（不需要比較函數）
+    int_val = 1; push(&stack1, &int_val, sizeof(int));
+    int_val = 2; push(&stack1, &int_val, sizeof(int));
+    int_val = 3; push(&stack1, &int_val, sizeof(int));
     
-    int_val = 1; push(&stack2, &int_val, sizeof(int), compare_int, print_int);
-    int_val = 2; push(&stack2, &int_val, sizeof(int), compare_int, print_int);
-    int_val = 3; push(&stack2, &int_val, sizeof(int), compare_int, print_int);
+    int_val = 1; push(&stack2, &int_val, sizeof(int));
+    int_val = 2; push(&stack2, &int_val, sizeof(int));
+    int_val = 3; push(&stack2, &int_val, sizeof(int));
     
-    printf("stack1: ");
-    display_stack(&stack1);
-    printf("stack2: ");
-    display_stack(&stack2);
-    
+    // stack_equal 會使用 memcmp 進行位元組比較（因為沒有 compare 函數）
     if (stack_equal(&stack1, &stack2)) {
-        printf("stack1 和 stack2 相等\n");
+        printf("stack1 和 stack2 相等（使用 memcmp 比較）\n");
     } else {
         printf("stack1 和 stack2 不相等\n");
     }
+    printf("注意：比較操作對 Stack 來說不是核心功能，通常不需要\n\n");
 
-    printf("\n=== 測試 push_range（使用 float 陣列） ===\n");
+    printf("=== 測試 push_range（使用 float 陣列，需要 print 函數以便顯示）===\n");
     node *range_stack = NULL;
     float float_arr[] = {1.1f, 2.2f, 3.3f, 4.4f};
     int arr_len = sizeof(float_arr) / sizeof(float_arr[0]);
     
-    push_range(&range_stack, float_arr, sizeof(float), arr_len, compare_float, print_float);
+    push_range(&range_stack, float_arr, sizeof(float), arr_len, print_float);
     printf("range_stack: ");
     display_stack(&range_stack);
 
-    printf("\n=== 測試 multi_push（使用 char） ===\n");
+    printf("\n=== 測試 multi_push（使用 char，需要 print 函數以便顯示）===\n");
     node *multi_stack = NULL;
     char_val = 'X';
-    multi_push(&multi_stack, &char_val, sizeof(char), 5, compare_char, print_char);
+    multi_push(&multi_stack, &char_val, sizeof(char), 5, print_char);
     printf("multi_stack (5個'X'): ");
     display_stack(&multi_stack);
 

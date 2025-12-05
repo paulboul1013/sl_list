@@ -61,27 +61,35 @@ int is_empty(node **head){
     return (*head==NULL);
 }
 
-void push(node **head, const void *data, size_t data_size, compare_func_t compare, print_func_t print){
-    if (insert_node(head, data, data_size, compare, print)==-1){
+// 簡化版本：核心 Stack 操作，不需要比較和顯示函數
+void push(node **head, const void *data, size_t data_size){
+    if (insert_node(head, data, data_size, NULL, NULL)==-1){
         printf("Stack overflow\n");
     }
 }
 
-void multi_push(node **head, const void *data, size_t data_size, int count, compare_func_t compare, print_func_t print){
-    for(int i=0;i<count;i++){
-        push(head, data, data_size, compare, print);
+// 帶顯示函數的版本（用於需要顯示的情況）
+void push_with_print(node **head, const void *data, size_t data_size, print_func_t print){
+    if (insert_node(head, data, data_size, NULL, print)==-1){
+        printf("Stack overflow\n");
     }
 }
 
-void push_range(node **head, const void *arr, size_t elem_size, int size, compare_func_t compare, print_func_t print){
+void multi_push(node **head, const void *data, size_t data_size, int count, print_func_t print){
+    for(int i=0;i<count;i++){
+        push_with_print(head, data, data_size, print);
+    }
+}
+
+void push_range(node **head, const void *arr, size_t elem_size, int size, print_func_t print){
     const char *arr_ptr = (const char *)arr;
     for(int i=0;i<size;i++){
-        push(head, arr_ptr + i * elem_size, elem_size, compare, print);
+        push_with_print(head, arr_ptr + i * elem_size, elem_size, print);
     }
 }
 
-void push_value_status(node **head, const void *data, size_t data_size, int status, compare_func_t compare, print_func_t print){
-    if (insert_node(head, data, data_size, compare, print)==-1){
+void push_value_status(node **head, const void *data, size_t data_size, int status, print_func_t print){
+    if (insert_node(head, data, data_size, NULL, print)==-1){
         printf("Stack overflow\n");
     }
 
