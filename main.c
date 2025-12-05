@@ -15,22 +15,25 @@ int main(){
 
 
     node *stack2=NULL;
-    push(&stack2,1);
-    push(&stack2,2);
-    push(&stack2,3);
-    push(&stack2,4);
-    push(&stack2,5);
-    push(&stack2,6);
-    push(&stack2,7);
-    push(&stack2,8);
-    push(&stack2,9);
+    int val;
+    val = 1; push(&stack2, &val, sizeof(int), compare_int, print_int);
+    val = 2; push(&stack2, &val, sizeof(int), compare_int, print_int);
+    val = 3; push(&stack2, &val, sizeof(int), compare_int, print_int);
+    val = 4; push(&stack2, &val, sizeof(int), compare_int, print_int);
+    val = 5; push(&stack2, &val, sizeof(int), compare_int, print_int);
+    val = 6; push(&stack2, &val, sizeof(int), compare_int, print_int);
+    val = 7; push(&stack2, &val, sizeof(int), compare_int, print_int);
+    val = 8; push(&stack2, &val, sizeof(int), compare_int, print_int);
+    val = 9; push(&stack2, &val, sizeof(int), compare_int, print_int);
 
     display_stack(&stack2);
     node *stack3=stack2;
     display_stack(&stack3);
     
-    printf("stack2 is %d\n",peek(&stack2));
-    printf("stack3 is %d\n",peek(&stack3));
+    int *peek_val = (int*)peek(&stack2);
+    printf("stack2 is %d\n", peek_val ? *peek_val : -1);
+    peek_val = (int*)peek(&stack3);
+    printf("stack3 is %d\n", peek_val ? *peek_val : -1);
 
     if (is_empty(&stack2)){
         printf("stack2 is empty\n");
@@ -41,21 +44,21 @@ int main(){
 
 
     printf("stack2 length is %d\n",stack_length(&stack2));
-    multi_push(&stack2,10,5);
+    val = 10; multi_push(&stack2, &val, sizeof(int), 5, compare_int, print_int);
     display_stack(&stack2);
 
     int arr[]={1,2,3};
     int arr_len=sizeof(arr)/sizeof(arr[0]);
-    push_range(&stack2,arr,arr_len);
+    push_range(&stack2, arr, sizeof(int), arr_len, compare_int, print_int);
     display_stack(&stack2);
 
     multi_pop(&stack2,14);
     display_stack(&stack2);
 
     stack3=NULL;
-    push(&stack3,4);
-    push(&stack3,5);
-    push(&stack3,6);
+    val = 4; push(&stack3, &val, sizeof(int), compare_int, print_int);
+    val = 5; push(&stack3, &val, sizeof(int), compare_int, print_int);
+    val = 6; push(&stack3, &val, sizeof(int), compare_int, print_int);
     display_stack(&stack3);
 
     swap_stack(&stack2,&stack3);
@@ -63,14 +66,14 @@ int main(){
     display_stack(&stack3);
 
     node *stack4=NULL;
-    push(&stack4,1);
-    push(&stack4,2);
-    push(&stack4,3);
+    val = 1; push(&stack4, &val, sizeof(int), compare_int, print_int);
+    val = 2; push(&stack4, &val, sizeof(int), compare_int, print_int);
+    val = 3; push(&stack4, &val, sizeof(int), compare_int, print_int);
     node *stack5=NULL;
-    push(&stack5,1);
-    push(&stack5,2);
-    push(&stack5,3);
-    push(&stack5,4);
+    val = 1; push(&stack5, &val, sizeof(int), compare_int, print_int);
+    val = 2; push(&stack5, &val, sizeof(int), compare_int, print_int);
+    val = 3; push(&stack5, &val, sizeof(int), compare_int, print_int);
+    val = 4; push(&stack5, &val, sizeof(int), compare_int, print_int);
 
 
     if (stack_greater_than_equal(&stack5,&stack4)){
