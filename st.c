@@ -7,6 +7,7 @@ Stack* stack_create(void) {
         return NULL;
     }
     stack->head = NULL;
+    stack->count = 0;  // 初始化計數器
     return stack;
 }
 
@@ -83,95 +84,121 @@ int delete_node(Node **head){
     return 1;
 }
 
-int is_empty(Stack *stack){
+int is_empty(const Stack *stack){
     return (stack == NULL || stack->head == NULL);
 }
 
 // 簡化版本：核心 Stack 操作，不需要比較和顯示函數
-void push(Stack *stack, const void *data, size_t data_size){
+int push(Stack *stack, const void *data, size_t data_size){
     if (stack == NULL) {
-        printf("Stack is NULL\n");
-        return;
+        return -1;  // 錯誤：stack 為 NULL
     }
     if (insert_node(&(stack->head), data, data_size, NULL, NULL)==-1){
-        printf("Stack overflow\n");
+        return -1;  // 錯誤：記憶體分配失敗
     }
+    stack->count++;  // 增加計數器
+    return 0;  // 成功
 }
 
 // 帶顯示函數的版本（用於需要顯示的情況）
-void push_with_print(Stack *stack, const void *data, size_t data_size, print_func_t print){
+int push_with_print(Stack *stack, const void *data, size_t data_size, print_func_t print){
     if (stack == NULL) {
-        printf("Stack is NULL\n");
-        return;
+        return -1;  // 錯誤：stack 為 NULL
     }
     if (insert_node(&(stack->head), data, data_size, NULL, print)==-1){
-        printf("Stack overflow\n");
+        return -1;  // 錯誤：記憶體分配失敗
     }
+    stack->count++;  // 增加計數器
+    return 0;  // 成功
 }
 
-void multi_push(Stack *stack, const void *data, size_t data_size, int count, print_func_t print){
+int multi_push(Stack *stack, const void *data, size_t data_size, int count, print_func_t print){
+    if (stack == NULL) {
+        return -1;
+    }
+    int success_count = 0;
     for(int i=0;i<count;i++){
-        push_with_print(stack, data, data_size, print);
+        if (push_with_print(stack, data, data_size, print) == 0) {
+            success_count++;
+        } else {
+            // 如果失敗，返回已成功推入的數量（負數表示部分失敗）
+            return -(success_count);
+        }
     }
+    return 0;  // 全部成功
 }
 
-void push_range(Stack *stack, const void *arr, size_t elem_size, int size, print_func_t print){
-    const char *arr_ptr = (const char *)arr;
-    for(int i=0;i<size;i++){
-        push_with_print(stack, arr_ptr + i * elem_size, elem_size, print);
-    }
-}
-
-void push_value_status(Stack *stack, const void *data, size_t data_size, int status, print_func_t print){
+int push_range(Stack *stack, const void *arr, size_t elem_size, int size, print_func_t print){
     if (stack == NULL) {
-        printf("Stack is NULL\n");
-        return;
+        return -1;
+    }
+    const char *arr_ptr = (const char *)arr;
+    int success_count = 0;
+    for(int i=0;i<size;i++){
+        if (push_with_print(stack, arr_ptr + i * elem_size, elem_size, print) == 0) {
+            success_count++;
+        } else {
+            // 如果失敗，返回已成功推入的數量（負數表示部分失敗）
+            return -(success_count);
+        }
+    }
+    return 0;  // 全部成功
+}
+
+int push_value_status(Stack *stack, const void *data, size_t data_size, int status, print_func_t print){
+    if (stack == NULL) {
+        return -1;  // 錯誤：stack 為 NULL
     }
     if (insert_node(&(stack->head), data, data_size, NULL, print)==-1){
-        printf("Stack overflow\n");
+        return -1;  // 錯誤：記憶體分配失敗
     }
-
     stack->head->status=status;
+    stack->count++;  // 增加計數器
+    return 0;  // 成功
 }
 
 int pop(Stack *stack){
     if (stack == NULL || is_empty(stack)){
-        printf("Stack underflow\n");
-        return -1;
+        return -1;  // 錯誤：stack 為 NULL 或為空
     }
 
     delete_node(&(stack->head));
-    return 1;
+    stack->count--;  // 減少計數器
+    return 0;  // 成功
 }
 
 int multi_pop(Stack *stack, int count){
-    if (stack == NULL || is_empty(stack)){
-        printf("Stack underflow\n");
+    if (stack == NULL) {
         return -1;
     }
-
+    
+    int success_count = 0;
     for(int i=0;i<count;i++){
-        pop(stack);
+        if (pop(stack) == 0) {
+            success_count++;
+        } else {
+            // 如果失敗，返回已成功彈出的數量（負數表示部分失敗）
+            return -(success_count);
+        }
     }
-
-    return 1;
+    return 0;  // 全部成功
 }
 
-void *peek(Stack *stack){
+const void *peek(const Stack *stack){
     if (stack != NULL && !is_empty(stack)){
-        return stack->head->data;
+        return stack->head->data;  // 返回 const 指標
     }
     else{
         return NULL;
     }
 }
 
-void display_stack(Stack *stack){
+void display_stack(const Stack *stack){
     if (stack == NULL) {
         printf("Stack is NULL\n");
         return;
     }
-    Node *temp=stack->head;
+    const Node *temp=stack->head;
     printf("Top->");
     while (temp!=NULL) {
         if (temp->print != NULL) {
@@ -189,17 +216,11 @@ void display_stack(Stack *stack){
 
 
 
-int stack_length(Stack *stack){
+size_t stack_length(const Stack *stack){
     if (stack == NULL) {
         return 0;
     }
-    int len=0;
-    Node *temp=stack->head;
-    while (temp!=NULL) {
-        len++;
-        temp=temp->next;
-    }
-    return len;
+    return stack->count;  // O(1) 時間複雜度，直接返回計數器
 }
 
 void swap_stack(Stack *stack1, Stack *stack2){
@@ -211,12 +232,12 @@ void swap_stack(Stack *stack1, Stack *stack2){
     stack2->head=temp;
 }
 
-bool stack_equal(Stack *stack1, Stack *stack2){
+bool stack_equal(const Stack *stack1, const Stack *stack2){
     if (stack1 == NULL || stack2 == NULL) {
         return false;
     }
-    Node *temp1=stack1->head;
-    Node *temp2=stack2->head;
+    const Node *temp1=stack1->head;
+    const Node *temp2=stack2->head;
     while(temp1!=NULL && temp2!=NULL){
         // 如果兩個節點都有比較函數，使用比較函數
         if(temp1->compare != NULL && temp2->compare != NULL){
@@ -237,16 +258,16 @@ bool stack_equal(Stack *stack1, Stack *stack2){
     return (temp1==NULL && temp2==NULL);
 }
 
-bool stack_not_equal(Stack *stack1, Stack *stack2){
+bool stack_not_equal(const Stack *stack1, const Stack *stack2){
     return !stack_equal(stack1,stack2);
 }
 
-bool stack_less_than(Stack *stack1, Stack *stack2){
+bool stack_less_than(const Stack *stack1, const Stack *stack2){
     if (stack1 == NULL || stack2 == NULL) {
         return false;
     }
-    Node *temp1=stack1->head;
-    Node *temp2=stack2->head;
+    const Node *temp1=stack1->head;
+    const Node *temp2=stack2->head;
     while(temp1!=NULL && temp2!=NULL){
         int cmp_result;
         if(temp1->compare != NULL && temp2->compare != NULL){
@@ -266,16 +287,16 @@ bool stack_less_than(Stack *stack1, Stack *stack2){
     return false;
 }
 
-bool stack_less_than_equal(Stack *stack1, Stack *stack2){
+bool stack_less_than_equal(const Stack *stack1, const Stack *stack2){
     return stack_less_than(stack1,stack2) || stack_equal(stack1,stack2);
 }
 
-bool stack_greater_than(Stack *stack1, Stack *stack2){
+bool stack_greater_than(const Stack *stack1, const Stack *stack2){
     if (stack1 == NULL || stack2 == NULL) {
         return false;
     }
-    Node *temp1=stack1->head;
-    Node *temp2=stack2->head;
+    const Node *temp1=stack1->head;
+    const Node *temp2=stack2->head;
     while(temp1!=NULL && temp2!=NULL){
         int cmp_result;
         if(temp1->compare != NULL && temp2->compare != NULL){
@@ -295,7 +316,7 @@ bool stack_greater_than(Stack *stack1, Stack *stack2){
     return false;
 }
 
-bool stack_greater_than_equal(Stack *stack1, Stack *stack2){
+bool stack_greater_than_equal(const Stack *stack1, const Stack *stack2){
     return stack_greater_than(stack1,stack2) || stack_equal(stack1,stack2);
 }
 

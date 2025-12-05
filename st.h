@@ -30,6 +30,7 @@ typedef struct Node {
 // List 結構（封裝節點）
 typedef struct List {
     Node *head;              // 指向第一個節點的指標
+    size_t count;            // 節點數量計數器，讓 stack_length 變成 O(1)
 } List;
 
 // Stack 結構（基於 List 實現 FILO）
@@ -40,29 +41,30 @@ Stack* stack_create(void);
 void stack_destroy(Stack *stack);
 
 // 核心 Stack 操作（FILO）- 不需要比較函數
-void push(Stack *stack, const void *data, size_t data_size);
-void push_with_print(Stack *stack, const void *data, size_t data_size, print_func_t print);
+// 返回值：0 成功，-1 失敗（記憶體分配失敗或 stack 為 NULL）
+int push(Stack *stack, const void *data, size_t data_size);
+int push_with_print(Stack *stack, const void *data, size_t data_size, print_func_t print);
 int pop(Stack *stack);
 int multi_pop(Stack *stack, int count);
-void *peek(Stack *stack);
-int is_empty(Stack *stack);
-int stack_length(Stack *stack);
+const void *peek(const Stack *stack);  // const 正確性：返回 const 指標防止修改
+int is_empty(const Stack *stack);       // const 正確性：不修改 stack
+size_t stack_length(const Stack *stack); // const 正確性：O(1) 時間複雜度
 void swap_stack(Stack *stack1, Stack *stack2);
 
 // 進階操作 - 需要顯示函數
-void multi_push(Stack *stack, const void *data, size_t data_size, int count, print_func_t print);
-void push_range(Stack *stack, const void *arr, size_t elem_size, int size, print_func_t print);
-void push_value_status(Stack *stack, const void *data, size_t data_size, int status, print_func_t print);
-void display_stack(Stack *stack);
+int multi_push(Stack *stack, const void *data, size_t data_size, int count, print_func_t print);
+int push_range(Stack *stack, const void *arr, size_t elem_size, int size, print_func_t print);
+int push_value_status(Stack *stack, const void *data, size_t data_size, int status, print_func_t print);
+void display_stack(const Stack *stack);  // const 正確性：只讀操作
 
 // Stack 比較操作 - 需要比較函數（這些操作對 Stack 來說不是核心功能）
 // 注意：這些函數需要 stack 中的節點都有 compare 函數，否則使用 memcmp
-bool stack_equal(Stack *stack1, Stack *stack2);
-bool stack_not_equal(Stack *stack1, Stack *stack2);
-bool stack_less_than(Stack *stack1, Stack *stack2);
-bool stack_less_than_equal(Stack *stack1, Stack *stack2);
-bool stack_greater_than(Stack *stack1, Stack *stack2);
-bool stack_greater_than_equal(Stack *stack1, Stack *stack2);
+bool stack_equal(const Stack *stack1, const Stack *stack2);  // const 正確性
+bool stack_not_equal(const Stack *stack1, const Stack *stack2);
+bool stack_less_than(const Stack *stack1, const Stack *stack2);
+bool stack_less_than_equal(const Stack *stack1, const Stack *stack2);
+bool stack_greater_than(const Stack *stack1, const Stack *stack2);
+bool stack_greater_than_equal(const Stack *stack1, const Stack *stack2);
 
 // 內部函數（通常不需要直接調用）
 Node *create_node(const void *data, size_t data_size, compare_func_t compare, print_func_t print);

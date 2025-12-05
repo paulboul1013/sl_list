@@ -35,19 +35,20 @@ int main() {
     Stack *int_stack = stack_create();
     int int_val;
     
-    // 簡化版本：只需要資料和大小
-    int_val = 10; push(int_stack, &int_val, sizeof(int));
-    int_val = 20; push(int_stack, &int_val, sizeof(int));
-    int_val = 30; push(int_stack, &int_val, sizeof(int));
+    // 使用 push_with_print 以便正確顯示資料
+    int_val = 10; 
+    if (push_with_print(int_stack, &int_val, sizeof(int), print_int) != 0) {
+        printf("錯誤：push 失敗\n");
+    }
+    int_val = 20; push_with_print(int_stack, &int_val, sizeof(int), print_int);
+    int_val = 30; push_with_print(int_stack, &int_val, sizeof(int), print_int);
     
-    // peek 操作不需要比較函數
-    int *peek_int = (int*)peek(int_stack);
+    // peek 操作不需要比較函數（現在返回 const void*）
+    const int *peek_int = (const int*)peek(int_stack);
     printf("頂部元素: %d\n", peek_int ? *peek_int : -1);
-    printf("長度: %d\n", stack_length(int_stack));
+    printf("長度: %zu\n", stack_length(int_stack));  // size_t 使用 %zu
     
-    // 如果需要顯示，使用 push_with_print（但已經 push 的節點沒有 print 函數）
-    // 所以這裡顯示記憶體位址
-    printf("int_stack（顯示記憶體位址，因為沒有設置 print 函數）: ");
+    printf("int_stack: ");
     display_stack(int_stack);
     printf("\n");
 
@@ -55,7 +56,7 @@ int main() {
     Stack *float_stack = stack_create();
     float float_val;
     
-    // 如果需要顯示功能，使用 push_with_print
+    // 如果需要顯示功能，使用 push_with_print（現在返回錯誤碼）
     float_val = 3.14f; push_with_print(float_stack, &float_val, sizeof(float), print_float);
     float_val = 2.71f; push_with_print(float_stack, &float_val, sizeof(float), print_float);
     float_val = 1.41f; push_with_print(float_stack, &float_val, sizeof(float), print_float);
@@ -63,9 +64,9 @@ int main() {
     printf("float_stack: ");
     display_stack(float_stack);
     
-    float *peek_float = (float*)peek(float_stack);
+    const float *peek_float = (const float*)peek(float_stack);
     printf("頂部元素: %.2f\n", peek_float ? *peek_float : -1.0f);
-    printf("長度: %d\n\n", stack_length(float_stack));
+    printf("長度: %zu\n\n", stack_length(float_stack));  // size_t 使用 %zu
 
     printf("=== 測試 char 型態（使用 push_with_print 以便顯示）===\n");
     Stack *char_stack = stack_create();
@@ -78,9 +79,9 @@ int main() {
     printf("char_stack: ");
     display_stack(char_stack);
     
-    char *peek_char = (char*)peek(char_stack);
+    const char *peek_char = (const char*)peek(char_stack);
     printf("頂部元素: %c\n", peek_char ? *peek_char : '?');
-    printf("長度: %d\n\n", stack_length(char_stack));
+    printf("長度: %zu\n\n", stack_length(char_stack));  // size_t 使用 %zu
 
     printf("=== 測試 struct (Student) 型態（使用 push_with_print 以便顯示）===\n");
     Stack *student_stack = stack_create();
@@ -104,19 +105,19 @@ int main() {
     printf("student_stack: ");
     display_stack(student_stack);
     
-    Student *peek_student = (Student*)peek(student_stack);
+    const Student *peek_student = (const Student*)peek(student_stack);
     if (peek_student) {
         printf("頂部元素: ");
         print_student(peek_student, sizeof(Student));
         printf("\n");
     }
-    printf("長度: %d\n\n", stack_length(student_stack));
+    printf("長度: %zu\n\n", stack_length(student_stack));  // size_t 使用 %zu
 
     printf("=== 測試 stack 比較操作（使用 memcmp，因為沒有設置 compare 函數）===\n");
     Stack *stack1 = stack_create();
     Stack *stack2 = stack_create();
     
-    // 使用簡化版本的 push（不需要比較函數）
+    // 使用簡化版本的 push（不需要比較函數，現在返回錯誤碼）
     int_val = 1; push(stack1, &int_val, sizeof(int));
     int_val = 2; push(stack1, &int_val, sizeof(int));
     int_val = 3; push(stack1, &int_val, sizeof(int));
@@ -150,11 +151,11 @@ int main() {
     display_stack(multi_stack);
 
     printf("\n=== 測試 pop 操作 ===\n");
-    printf("pop 前長度: %d\n", stack_length(int_stack));
+    printf("pop 前長度: %zu\n", stack_length(int_stack));  // size_t 使用 %zu
     pop(int_stack);
     printf("pop 後: ");
     display_stack(int_stack);
-    printf("pop 後長度: %d\n", stack_length(int_stack));
+    printf("pop 後長度: %zu\n", stack_length(int_stack));  // size_t 使用 %zu
 
     // 清理所有 stack
     stack_destroy(int_stack);
