@@ -1,6 +1,6 @@
 CFLAGS=-Wall -Wextra -Werror
 
-SOURCES=main.c fib.c st.c eval.c
+SOURCES=main.c st.c
 OBJECTS=$(SOURCES:.c=.o)
 
 all: $(OBJECTS)

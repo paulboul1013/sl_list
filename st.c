@@ -1,4 +1,5 @@
 #include "st.h"
+#include <limits.h>
 
 // Stack 初始化與清理
 Stack* stack_create(void) {
@@ -280,11 +281,15 @@ bool stack_less_than(const Stack *stack1, const Stack *stack2){
         if(cmp_result < 0){
             return true;
         }
+        if(temp1->data>temp2->data){
+            return false;
+        }
         temp1=temp1->next;
         temp2=temp2->next;
     }
-    
-    return false;
+    // 如果 stack1 先結束，則 stack1 < stack2
+    // 如果 stack2 先結束或同時結束，則 stack1 >= stack2
+    return (temp1==NULL && temp2!=NULL);
 }
 
 bool stack_less_than_equal(const Stack *stack1, const Stack *stack2){
@@ -309,11 +314,15 @@ bool stack_greater_than(const Stack *stack1, const Stack *stack2){
         if(cmp_result > 0){
             return true;
         }
+        if(temp1->data<temp2->data){
+            return false;
+        }
         temp1=temp1->next;
         temp2=temp2->next;
     }
-    
-    return false;
+    // 如果 stack2 先結束，則 stack1 > stack2
+    // 如果 stack1 先結束或同時結束，則 stack1 <= stack2
+    return (temp1!=NULL && temp2==NULL);
 }
 
 bool stack_greater_than_equal(const Stack *stack1, const Stack *stack2){
